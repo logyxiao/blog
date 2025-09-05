@@ -12,7 +12,7 @@ import rehypeExternalLinks from 'rehype-external-links';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://logyxiao.cc',
+	site: 'https://logyxiao.cc', // 你可以稍后在 Vercel 中配置自定义域名
 	i18n: {
 		defaultLocale: 'zh-cn',
 		locales: ['zh-cn', 'en'],
