@@ -1,0 +1,152 @@
+---
+import { formatDate } from "../lib/i18n";
+
+interface Props {
+    post: {
+        id: string;
+        data: {
+            title: string;
+            description: string;
+            pubDate: Date;
+            heroImage?: any;
+            tags: string[];
+        };
+        body?: string;
+    };
+    lang: "zh-cn" | "en";
+}
+
+const { post, lang } = Astro.props;
+
+// 获取文章摘要（前6行内容）
+function getExcerpt(content: string, lines: number = 6): string {
+    const contentLines = content
+        .split("\n")
+        .filter((line) => line.trim() !== "");
+    return contentLines.slice(0, lines).join("\n");
+}
+
+const excerpt = getExcerpt(post.body || "");
+const formattedDate = formatDate(post.data.pubDate, lang);
+---
+
+<article
+    class="group transition-all duration-normal border-card-border h-full flex flex-col overflow-hidden blog-card-mobile paper-card"
+>
+    <a href={`/blog/${post.id}/`} class="flex flex-col h-full">
+        {/* 图片区域 */}
+        <!-- {
+            post.data.heroImage && (
+                <div class="w-full aspect-[16/9] sm:aspect-[16/8] overflow-hidden">
+                    <img
+                        src={post.data.heroImage.src}
+                        alt={post.data.title}
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-slow"
+                    />
+                </div>
+            )
+        } -->
+
+        {/* 文字内容区域 */}
+        <div class="flex-1 flex flex-col">
+            {/* 标题区域 */}
+            <header class="px-3 py-3 sm:px-4 sm:py-4 pb-2">
+                <h3
+                    class="text-base sm:text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-fast line-clamp-2 leading-tight handwriting"
+                >
+                    {post.data.title}
+                </h3>
+            </header>
+
+            {/* 内容区域 */}
+            <div class="px-3 sm:px-4 pt-0 pb-3 sm:pb-4 flex-1 flex flex-col">
+                {/* 摘要文字 */}
+                <div
+                    class="text-muted-foreground text-sm leading-relaxed mb-3 sm:mb-4 flex-1"
+                >
+                    <p class="whitespace-pre-line line-clamp-4">
+                        {excerpt}
+                    </p>
+                </div>
+
+                {/* 底部信息区域 */}
+                <div class="mt-auto space-y-2.5">
+                    {/* 日期和阅读时间 */}
+                    <div
+                        class="flex items-center text-xs text-muted-foreground space-x-3 justify-between"
+                    >
+                        <div>
+                            {/* 标签 */}
+                            {
+                                post.data.tags && post.data.tags.length > 0 && (
+                                    <div class="flex flex-wrap gap-1.5">
+                                        {post.data.tags
+                                            .slice(0, 3)
+                                            .map((tag) => (
+                                                <span class="px-2 py-0.5 text-xs bg-surface rounded text-muted-foreground truncate max-w-[100px]">
+                                                    #{tag}
+                                                </span>
+                                            ))}
+                                        {post.data.tags.length > 3 && (
+                                            <span class="px-2 py-0.5 text-xs bg-surface rounded text-muted-foreground">
+                                                +{post.data.tags.length - 3}
+                                            </span>
+                                        )}
+                                    </div>
+                                )
+                            }
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <svg
+                                class="h-3 w-3 flex-shrink-0"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                ></path>
+                            </svg>
+                            <span class="truncate">{formattedDate}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+</article>
+
+<style>
+    .blog-card-mobile {
+        @apply rounded-lg border;
+    }
+
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .line-clamp-4 {
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .duration-fast {
+        transition-duration: 150ms;
+    }
+
+    .duration-normal {
+        transition-duration: 300ms;
+    }
+
+    .duration-slow {
+        transition-duration: 500ms;
+    }
+</style>

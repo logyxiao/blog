@@ -1,62 +1,146 @@
-# Astro Starter Kit: Blog
+# 个人博客项目
 
-```sh
-pnpm create astro@latest -- --template blog
+## 项目概述
+
+这是一个基于 Astro 框架构建的个人博客项目，采用现代化的技术栈和简洁的设计理念。项目集成了原有 Vite 博客的设计风格，并添加了中英文国际化支持。
+
+## 技术栈
+
+- **框架**: Astro 5.13.5 (SSG)
+- **UI 框架**: React 19.1.1
+- **样式**: Tailwind CSS 3.4.0
+- **UI 组件**: shadcn/ui + Radix UI
+- **国际化**: Astro 内置 i18n 支持
+- **构建工具**: Vite (内置于 Astro)
+- **包管理器**: pnpm
+
+## 项目结构
+
 ```
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-Features:
-
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-├── public/
 ├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+│   ├── components/          # 组件目录
+│   │   ├── BlogCard.astro  # 博客卡片组件
+│   │   ├── AuthorSidebar.astro # 作者侧边栏
+│   │   ├── BaseHead.astro  # 页面头部
+│   │   ├── Header.astro    # 导航头部
+│   │   ├── Footer.astro    # 页脚
+│   │   └── FormattedDate.astro # 日期格式化
+│   ├── layouts/            # 布局模板
+│   ├── pages/              # 页面路由
+│   ├── content/            # 内容集合 (Markdown)
+│   ├── styles/             # 样式文件
+│   │   └── global.css     # 全局样式
+│   └── lib/                # 工具库
+│       └── i18n.ts        # 国际化配置
+├── public/                 # 静态资源
+└── blog/                   # 原 Vite 博客项目
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## 核心功能
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+### 1. 国际化支持
+- 支持中文（默认）和英文两种语言
+- 使用 Astro 内置 i18n 路由系统
+- 动态翻译界面文本和日期格式
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+### 2. 博客系统
+- 基于 Markdown 的内容管理
+- 时间轴式文章展示
+- 博客卡片设计（参考原 BlogCard 组件）
+- 文章摘要自动生成（前6行内容）
 
-Any static assets, like images, can be placed in the `public/` directory.
+### 3. 设计系统
+- **纸张质感设计**: 采用简洁的黑白配色方案
+- **无阴影设计**: 去除所有阴影效果，追求极简美学
+- **响应式布局**: 适配桌面端和移动端
+- **手写字体**: 使用 Kalam 字体增加个性化
 
-## 🧞 Commands
+### 4. 页面布局
+- **首页**: 时间轴 + 侧边栏布局
+- **时间轴**: 左侧时间线，右侧博客卡片
+- **侧边栏**: 作者信息、博客统计、快速导航、热门标签
 
-All commands are run from the root of the project, from a terminal:
+## 组件说明
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+### BlogCard 组件
+- 展示文章标题、摘要、发布日期
+- 支持英雄图片显示
+- 响应式卡片设计
+- 无阴影的简洁风格
 
-## 👀 Want to learn more?
+### AuthorSidebar 组件
+- 作者头像和简介
+- 博客统计信息（文章总数、开始时间、位置）
+- 快速导航链接
+- 热门标签展示
+- 多语言支持
 
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### 国际化系统
+- 集中式翻译管理
+- 语言检测和切换
+- 日期本地化格式
+- URL 路由国际化
 
-## Credit
+## 样式特色
 
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+### 颜色系统
+- **背景色**: 纯白 (#FFFFFF)
+- **前景色**: 深黑 (#171717)
+- **表面色**: 浅灰 (#FAFAFA, #F5F5F5)
+- **边框色**: 中灰 (#E5E5E5)
+- **强调色**: 黑色 (#171717)
+
+### 设计原则
+- **极简主义**: 去除不必要的装饰元素
+- **内容优先**: 突出文章内容的可读性
+- **纸张质感**: 模拟纸张的自然质感
+- **清晰层次**: 通过间距和字体大小建立视觉层次
+
+## 当前工作进度
+
+### ✅ 已完成
+1. **样式系统迁移**: 成功将 Vite 博客的纸张质感设计迁移到 Astro
+2. **国际化配置**: 完成中英文双语支持
+3. **组件迁移**: BlogCard 和 AuthorSidebar 组件迁移完成
+4. **布局优化**: 实现时间轴 + 侧边栏的响应式布局
+5. **阴影移除**: 去除所有阴影效果，实现纯净的视觉效果
+
+### 🔄 进行中
+- 测试和优化用户体验
+- 完善移动端适配
+
+### 📋 待完成
+- 添加语言切换功能
+- 完善其他页面的国际化
+- 添加搜索功能
+- 优化 SEO 设置
+- 添加评论系统集成
+
+## 开发命令
+
+```bash
+# 安装依赖
+pnpm install
+
+# 开发服务器
+pnpm dev
+
+# 构建项目
+pnpm build
+
+# 预览构建结果
+pnpm preview
+
+# 类型检查
+pnpm astro check
+```
+
+## 设计亮点
+
+1. **时间轴设计**: 左侧时间线视觉引导，右侧内容卡片，清晰展示文章发布时间线
+2. **卡片式布局**: 每篇文章独立卡片，包含标题、摘要、日期等关键信息
+3. **侧边栏信息**: 作者信息、统计数据、导航链接集中展示
+4. **无阴影美学**: 完全去除阴影效果，营造纯净的阅读环境
+5. **国际化体验**: 支持中英文切换，适应不同用户需求
+
+这个项目成功结合了 Astro 的现代化特性和原有博客的优秀设计，创造了一个简洁、高效、美观的个人博客系统。

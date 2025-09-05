@@ -1,0 +1,229 @@
+---
+import {
+    getLangFromUrl,
+    useTranslations,
+    languages,
+    switchLanguage,
+} from "../lib/i18n";
+import { Debug } from "astro:components";
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// 生成语言切换链接
+const languageLinks = Object.entries(languages).map(([code, name]) => ({
+    code,
+    name,
+    url: switchLanguage(code as keyof typeof languages, Astro.url),
+    active: lang === code,
+}));
+---
+
+<div class="language-dropdown">
+    <button class="dropdown-trigger" id="language-trigger">
+        <span>{t("nav.language")}</span>
+        <svg
+            class="dropdown-arrow"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+        >
+            <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </button>
+
+    <div class="dropdown-menu" id="language-menu">
+        {
+            languageLinks.map(({ code, name, url, active }) => (
+                <a
+                    href={url}
+                    class={`dropdown-item ${active ? "active" : ""}`}
+                    data-lang={code}
+                >
+                    <span class="lang-name">{name}</span>
+                    {active && (
+                        <svg
+                            class="check-icon"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M5 13l4 4L19 7"
+                            />
+                        </svg>
+                    )}
+                </a>
+            ))
+        }
+    </div>
+</div>
+
+<style>
+    .language-dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-trigger {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        background: none;
+        border: none;
+        color: var(--foreground);
+        cursor: pointer;
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+    }
+
+    .dropdown-trigger:hover {
+        background-color: var(--surface);
+        color: var(--primary);
+    }
+
+    .dropdown-arrow {
+        width: 1rem;
+        height: 1rem;
+        transition: transform 0.2s ease;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        min-width: 8rem;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        margin-top: 0.25rem;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-0.5rem);
+        transition: all 0.2s ease;
+        z-index: 50;
+    }
+
+    .dropdown-menu.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 0.75rem;
+        text-decoration: none;
+        color: var(--foreground);
+        border-radius: 0.375rem;
+        transition: all 0.2s ease;
+        font-size: 0.875rem;
+    }
+
+    .dropdown-item:hover {
+        background-color: var(--surface);
+        color: var(--primary);
+    }
+
+    .dropdown-item.active {
+        background-color: var(--primary);
+        color: var(--primary-foreground);
+    }
+
+    .dropdown-item.active:hover {
+        background-color: var(--primary-hover);
+    }
+
+    .lang-code {
+        font-weight: 600;
+        min-width: 1.5rem;
+    }
+
+    .lang-name {
+        flex: 1;
+    }
+
+    .check-icon {
+        width: 1rem;
+        height: 1rem;
+        flex-shrink: 0;
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+        .dropdown-menu {
+            right: -1rem;
+            left: -1rem;
+            min-width: auto;
+        }
+    }
+</style>
+
+<script>
+    // 客户端JavaScript处理下拉菜单交互
+    document.addEventListener("DOMContentLoaded", () => {
+        const trigger = document.getElementById("language-trigger");
+        const menu = document.getElementById("language-menu");
+        const dropdown = document.querySelector(".language-dropdown");
+
+        if (!trigger || !menu || !dropdown) return;
+
+        // 切换下拉菜单显示
+        const toggleMenu = () => {
+            menu.classList.toggle("show");
+            const arrow = trigger.querySelector(
+                ".dropdown-arrow",
+            ) as HTMLElement;
+            if (arrow) {
+                arrow.style.transform = menu.classList.contains("show")
+                    ? "rotate(180deg)"
+                    : "";
+            }
+        };
+
+        // 点击触发器
+        trigger.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleMenu();
+        });
+
+        // 点击外部关闭菜单
+        document.addEventListener("click", (e) => {
+            if (!dropdown.contains(e.target as Node)) {
+                menu.classList.remove("show");
+                const arrow = trigger.querySelector(
+                    ".dropdown-arrow",
+                ) as HTMLElement;
+                if (arrow) {
+                    arrow.style.transform = "";
+                }
+            }
+        });
+
+        // 处理语言切换
+        const languageLinks = menu.querySelectorAll(".dropdown-item");
+        languageLinks.forEach((link) => {
+            link.addEventListener("click", (e) => {
+                const href = link.getAttribute("href");
+                if (href) {
+                    // 直接跳转到新的语言页面
+                    window.location.href = href;
+                }
+            });
+        });
+    });
+</script>
