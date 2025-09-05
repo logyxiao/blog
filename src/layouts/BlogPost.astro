@@ -5,12 +5,19 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
-type Props = CollectionEntry<'blog'>['data'];
+import { useTranslations, languages, formatDate }  from '../lib/i18n';
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+type Props = CollectionEntry<'blog'>['data'] & {
+	headings?: { depth: number; slug: string; text: string }[];
+};
+const { locale } = Astro.params;
+
+const lang = (locale as keyof typeof languages) || "zh-cn";
+
+const { title, description, pubDate, updatedDate, heroImage, headings = [] } = Astro.props;
 ---
 
-<html lang="en">
+<html lang={lang}>
 	<head>
 		<BaseHead title={title} description={description} />
 		<style>
@@ -36,17 +43,18 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 				color: rgb(var(--gray-dark));
 			}
 			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
 				text-align: center;
 				line-height: 1;
 			}
 			.title h1 {
 				margin: 0 0 0.5em 0;
+				border-bottom:none;
 			}
 			.date {
 				margin-bottom: 0.5em;
 				color: rgb(var(--gray));
+				/* font-style: italic; */
+				color: #555;
 			}
 			.last-updated-on {
 				font-style: italic;
@@ -63,23 +71,280 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 				</div>
 				<div class="prose">
 					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
-						</div>
 						<h1>{title}</h1>
-						<hr />
+						<div class="date">
+							 {formatDate(
+                                                pubDate,
+                                                lang,
+                                            )}
+							
+						</div>
 					</div>
-					<slot />
+				</div>
+				<div class="blog-content-toc-wrapper">
+					<div class="blog-content-main prose blog-content-centered">
+						<slot />
+					</div>
+					{headings.length > 0 && (
+						<nav class="toc-sidebar">
+							<h4>目录</h4>
+							<ul>
+								{headings.map((heading) => (
+									<li class={`toc-item toc-h${heading.depth}`}>
+										<a href={`#${heading.slug}`}>{heading.text}</a>
+									</li>
+								))}
+							</ul>
+						</nav>
+					)}
+				</div>
+				</div>
 				</div>
 			</article>
 		</main>
 		<Footer />
 	</body>
 </html>
+
+<script is:inline>
+if (typeof window !== 'undefined') {
+	window.addEventListener('DOMContentLoaded', () => {
+		const main = document.querySelector('.blog-content-main');
+		if (!main) return;
+
+		// 代码块复制按钮
+		main.querySelectorAll('pre code').forEach(block => {
+			const pre = block.parentElement;
+			if (!pre) return;
+			const btn = document.createElement('button');
+			btn.className = 'copy-btn';
+			btn.type = 'button';
+			btn.innerText = '复制';
+			btn.onclick = () => {
+				navigator.clipboard.writeText(block.innerText);
+				btn.innerText = '已复制!';
+				setTimeout(() => { btn.innerText = '复制'; }, 1200);
+			};
+			pre.style.position = 'relative';
+			btn.style.position = 'absolute';
+			btn.style.top = '8px';
+			btn.style.right = '12px';
+			pre.appendChild(btn);
+		});
+	});
+}
+</script>
+
+<style>
+.blog-content-toc-wrapper {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: center;
+	position: relative;
+	max-width: 1200px;
+	margin: 0 auto;
+	width: 100%;
+}
+.blog-content-main {
+	flex: 1 1 0%;
+	min-width: 0;
+}
+.blog-content-centered {
+	margin: 0 auto;
+	max-width: 720px;
+	background: #fff;
+	border-radius: 8px;
+	box-shadow: none;
+	padding: 2.5rem 2rem 2.5rem 2rem;
+}
+
+/* 右侧目录样式 */
+.toc-sidebar {
+	min-width: 200px;
+	max-width: 240px;
+	margin-left: 2.5rem;
+	background: #fff;
+	border: 1px solid #e9ecef;
+	border-radius: 8px;
+	padding: 1.5rem 1.2rem;
+	font-size: 0.95rem;
+	position: sticky;
+	top: 6rem;
+	height: fit-content;
+	z-index: 10;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.toc-sidebar h4 {
+	margin: 0 0 1rem 0;
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: #222;
+	border-bottom: 1px solid #e9ecef;
+	padding-bottom: 0.5rem;
+}
+.toc-sidebar ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.toc-item {
+	margin: 0.3rem 0;
+}
+
+/* 一级标题样式 */
+.toc-item.toc-h1 {
+	margin-left: 0;
+	font-weight: 700;
+	font-size: 1.05em;
+}
+
+/* 二级标题样式 */
+.toc-item.toc-h2 {
+	margin-left: 1rem;
+	font-weight: 600;
+}
+.toc-item.toc-h2 a::before {
+	content: "- ";
+	color: #888;
+	font-weight: normal;
+}
+
+/* 三级标题样式 */
+.toc-item.toc-h3 {
+	margin-left: 2rem;
+	font-weight: 500;
+}
+.toc-item.toc-h3 a::before {
+	content: "- ";
+	color: #888;
+	font-weight: normal;
+}
+
+/* 四级标题样式 */
+.toc-item.toc-h4 {
+	margin-left: 3rem;
+	font-weight: 400;
+}
+.toc-item.toc-h4 a::before {
+	content: "- ";
+	color: #888;
+	font-weight: normal;
+}
+
+/* 五级和六级标题样式 */
+.toc-item.toc-h5 {
+	margin-left: 4rem;
+	font-weight: 400;
+	font-size: 0.9em;
+}
+.toc-item.toc-h5 a::before {
+	content: "- ";
+	color: #888;
+	font-weight: normal;
+}
+
+.toc-item.toc-h6 {
+	margin-left: 5rem;
+	font-weight: 400;
+	font-size: 0.85em;
+}
+.toc-item.toc-h6 a::before {
+	content: "- ";
+	color: #888;
+	font-weight: normal;
+}
+
+.toc-sidebar a {
+	color: #495057;
+	text-decoration: none;
+	display: block;
+	padding: 0.2rem 0.5rem;
+	border-left: 3px solid transparent;
+	transition: all 0.2s ease;
+	line-height: 1.4;
+	position: relative;
+}
+.toc-sidebar a:hover {
+	color: #0051a3;
+	background: #f8f9fa;
+}
+
+/* 代码块复制按钮 */
+.copy-btn {
+	background: #fff;
+	color: #222;
+	border: 1px solid #bbb;
+	border-radius: 4px;
+	font-size: 0.85em;
+	padding: 0.2em 0.8em;
+	cursor: pointer;
+	opacity: 0.7;
+	transition: opacity 0.2s;
+	z-index: 2;
+}
+.copy-btn:hover {
+	opacity: 1;
+	border-color: #222;
+}
+
+/* 标题链接样式 (rehype-autolink-headings) */
+.blog-content-centered h1,
+.blog-content-centered h2,
+.blog-content-centered h3,
+.blog-content-centered h4,
+.blog-content-centered h5,
+.blog-content-centered h6 {
+	position: relative;
+}
+
+.blog-content-centered h1 a,
+.blog-content-centered h2 a,
+.blog-content-centered h3 a,
+.blog-content-centered h4 a,
+.blog-content-centered h5 a,
+.blog-content-centered h6 a {
+	position: absolute;
+	left: -1.5rem;
+	opacity: 0;
+	color: #888;
+	text-decoration: none;
+	transition: opacity 0.2s ease;
+	font-weight: normal;
+}
+
+.blog-content-centered h1:hover a,
+.blog-content-centered h2:hover a,
+.blog-content-centered h3:hover a,
+.blog-content-centered h4:hover a,
+.blog-content-centered h5:hover a,
+.blog-content-centered h6:hover a {
+	opacity: 1;
+}
+
+/* 外部链接样式 (rehype-external-links) */
+.blog-content-centered a[target="_blank"] {
+	color: #007acc;
+	text-decoration: none;
+	border-bottom: 1px solid #007acc;
+	transition: all 0.2s ease;
+}
+
+.blog-content-centered a[target="_blank"]:hover {
+	color: #005299;
+	border-bottom-color: #005299;
+	background-color: rgba(0, 122, 204, 0.05);
+}
+
+.blog-content-centered a[target="_blank"]::after {
+	content: " ↗";
+	font-size: 0.8em;
+	opacity: 0.7;
+}
+
+@media (max-width: 900px) {
+	.toc-sidebar { display: none; }
+	.blog-content-toc-wrapper { flex-direction: column; }
+	.blog-content-centered { max-width: 100vw; padding: 1.2rem 0.5rem; }
+}
+</style>

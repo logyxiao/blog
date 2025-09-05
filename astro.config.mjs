@@ -5,6 +5,10 @@ import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwind from '@astrojs/tailwind';
 import { defineConfig } from 'astro/config';
+import remarkGfm from 'remark-gfm';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypeExternalLinks from 'rehype-external-links';
 
 // https://astro.build/config
 export default defineConfig({
@@ -18,6 +22,33 @@ export default defineConfig({
 		fallback: {
 			'en': 'zh-cn',
 		},
+	},
+	markdown: {
+		remarkPlugins: [
+			remarkGfm, // GitHub Flavored Markdown 支持
+		],
+		rehypePlugins: [
+			rehypeSlug, // 为标题添加 ID
+			[rehypeAutolinkHeadings, { 
+				behavior: 'wrap',
+				properties: {
+					className: 'heading-link',
+					ariaLabel: '链接到此标题'
+				}
+			}], // 标题自动链接
+			[rehypeExternalLinks, { 
+				target: '_blank',
+				rel: ['noopener', 'noreferrer'],
+				properties: {
+					className: 'external-link'
+				}
+			}], // 外部链接优化
+		],
+		shikiConfig: {
+			theme: 'github-dark',
+			wrap: true,
+		},
+		syntaxHighlight: 'shiki',
 	},
 	integrations: [
 		mdx(),
