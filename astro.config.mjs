@@ -1,7 +1,6 @@
 // @ts-check
 
 import mdx from '@astrojs/mdx';
-import adapter from '@astrojs/adapter-static';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwind from '@astrojs/tailwind';
@@ -37,5 +36,4 @@ export default defineConfig({
 		},
 	},
 	output: 'static',
-	adapter: adapter(),
 });
