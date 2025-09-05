@@ -126,8 +126,22 @@
 .prose h4 { font-size: 1.1rem; }
 .prose h5, .prose h6 { font-size: 1rem; }
 .prose p { margin: 1em 0; }
-.prose ul, .prose ol { margin: 1em 0 1em 2em; }
-.prose li { margin: 0.3em 0; }
+.prose ul, .prose ol { 
+	margin: 1em 0 1em 0;
+	padding-left: 2em;
+}
+.prose ul li {
+	list-style-type: disc;
+	margin: 0.3em 0;
+}
+.prose ol li {
+	list-style-type: decimal;
+	margin: 0.3em 0;
+}
+.prose li { 
+	margin: 0.3em 0;
+	display: list-item;
+}
 .prose blockquote {
 	border-left: 4px solid #bbb;
 	background: #f9f9f9;

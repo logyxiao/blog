@@ -16,12 +16,61 @@ interface Props {
 
 const { post, lang } = Astro.props;
 
-// 获取文章摘要（前6行内容）
-function getExcerpt(content: string, lines: number = 6): string {
-    const contentLines = content
+// 获取文章摘要（剔除markdown格式，生成自然的文本摘要）
+function getExcerpt(content: string, maxLength: number = 200): string {
+    // 先按行分割并过滤空行
+    const lines = content
         .split("\n")
-        .filter((line) => line.trim() !== "");
-    return contentLines.slice(0, lines).join("\n");
+        .filter((line) => line.trim() !== "")
+        .map((line) => {
+            // 剔除markdown格式符号
+            return line
+                // 移除标题符号 # ## ### 等
+                .replace(/^#{1,6}\s+/, '')
+                // 移除代码块标记 ```
+                .replace(/^```[\w]*/, '')
+                .replace(/^```$/, '')
+                // 移除行内代码标记 `code`
+                .replace(/`([^`]+)`/g, '$1')
+                // 移除粗体 **text** 或 __text__
+                .replace(/\*\*([^*]+)\*\*/g, '$1')
+                .replace(/__([^_]+)__/g, '$1')
+                // 移除斜体 *text* 或 _text_
+                .replace(/\*([^*]+)\*/g, '$1')
+                .replace(/_([^_]+)_/g, '$1')
+                // 移除链接 [text](url)
+                .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+                // 移除图片 ![alt](url)
+                .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
+                // 移除引用符号 >
+                .replace(/^>\s*/, '')
+                // 移除列表符号 - * +
+                .replace(/^[-*+]\s+/, '')
+                // 移除有序列表数字
+                .replace(/^\d+\.\s+/, '')
+                // 移除HTML标签
+                .replace(/<[^>]*>/g, '')
+                // 移除多余空格并清理
+                .replace(/\s+/g, ' ')
+                .trim();
+        })
+        .filter((line) => line.length > 0); // 过滤掉空行
+    
+    // 合并所有行为一段文本
+    const fullText = lines.join(' ');
+    
+    // 如果文本长度超过限制，截断并添加省略号
+    if (fullText.length > maxLength) {
+        const truncated = fullText.substring(0, maxLength);
+        // 找到最后一个完整的词
+        const lastSpaceIndex = truncated.lastIndexOf(' ');
+        if (lastSpaceIndex > maxLength * 0.8) {
+            return truncated.substring(0, lastSpaceIndex) + '...';
+        }
+        return truncated + '...';
+    }
+    
+    return fullText;
 }
 
 const excerpt = getExcerpt(post.body || "");
@@ -61,7 +110,7 @@ const excerpt = getExcerpt(post.body || "");
                 <div
                     class="text-muted-foreground text-sm leading-relaxed mb-3 sm:mb-4 flex-1"
                 >
-                    <p class="whitespace-pre-line line-clamp-4">
+                    <p class="line-clamp-4">
                         {excerpt}
                     </p>
                 </div>
@@ -89,6 +138,21 @@ const excerpt = getExcerpt(post.body || "");
                                                 +{post.data.tags.length - 3}
                                             </span>
                                         )}
+                                    </div>
+                                )
+                            }
+                          
+                        </div>
+                        <div>
+                              <!-- 时间 -->
+                            {
+                                post.data.pubDate && (
+                                    <div class="mt-1 text-xs text-muted-foreground">
+                                        {new Date(post.data.pubDate).toLocaleDateString(lang, {
+                                            year: "numeric",
+                                            month: "short",
+                                            day: "numeric",
+                                        })}
                                     </div>
                                 )
                             }

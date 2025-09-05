@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "blog/financing/base.md",
+                "file": "blog/jotting/农村葬礼传统流程.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "base"
+              "title": "农村葬礼传统流程"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "blog/financing/base.md",
+                "file": "blog/jotting/农村葬礼传统流程.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "base 的反向链接列表"
+              "title": "农村葬礼传统流程 的反向链接列表"
             }
           },
           {
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "blog/financing/base.md",
+                "file": "blog/jotting/农村葬礼传统流程.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "base 的出链列表"
+              "title": "农村葬礼传统流程 的出链列表"
             }
           },
           {
@@ -142,13 +142,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "blog/financing/base.md",
+                "file": "blog/jotting/农村葬礼传统流程.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "base 的大纲"
+              "title": "农村葬礼传统流程 的大纲"
             }
           }
         ],
@@ -171,6 +171,11 @@
   },
   "active": "71cc4ce44b4be229",
   "lastOpenFiles": [
+    "blog/jotting/2022年09月27日.md",
+    "blog/jotting/农村葬礼传统流程.md",
+    "img/Image.png",
+    "blog/financing/base.md",
+    "blog/jotting/2022年10月10日 copy.md",
     "blog/jotting/8.md",
     "blog/jotting/9.md",
     "blog/jotting/2022年10月10日.md",
@@ -185,7 +190,6 @@
     "img/2023-07/image.png",
     "img/2023-07/IMG_7894.jpg",
     "img/2023-07/IMG_8240.jpg",
-    "img/2023-07/IMG_8833.jpg",
     "img/2023-07",
     "img"
   ]
