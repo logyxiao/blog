@@ -1,5 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap');
+/* 字体方案 - 请选择其中一种方案，注释掉其他两种 */
+
+/*
+使用说明:
+1. 启用某个方案: 取消注释对应的@import行
+2. 禁用某个方案: 在对应的@import行前添加注释符号
+3. 同时需要在tailwind.config.mjs中启用对应的fontFamily配置
+
+方案特点:
+- 方案1 (现代简洁): Inter + 思源黑体，适合现代网站，清晰易读
+- 方案2 (优雅阅读): Crimson Text + 思源宋体，适合内容丰富的博客，优雅传统
+- 方案3 (技术博客): Roboto + Fira Code，适合技术博客，代码友好
+*/
+
+/* 方案1: 现代简洁风格 (当前启用) */
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap'); */
+
+/* 方案2: 优雅阅读风格 (当前启用) */
+/* @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap'); */
+/* @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap'); */
+/* @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap'); */
+
+/* 方案3: 技术博客风格 (注释状态) */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;

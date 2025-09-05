@@ -15,7 +15,20 @@ export default {
         },
         extend: {
             fontFamily: {
-                sans: ['Inter', 'system-ui', 'sans-serif'],
+                // 方案1: 现代简洁风格 (当前启用)
+                // sans: ['Inter', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'system-ui', 'sans-serif'],
+                // serif: ['Noto Serif SC', 'SimSun', 'Georgia', 'serif'],
+                // mono: ['JetBrains Mono', 'Consolas', 'Monaco', 'monospace'],
+
+                // 方案2: 优雅阅读风格 (需要时取消注释，注释掉方案1)
+                // sans: ['Crimson Text', 'Noto Serif SC', 'SimSun', 'Georgia', 'serif'],
+                // serif: ['Playfair Display', 'Noto Serif SC', 'SimSun', 'Georgia', 'serif'],
+                // mono: ['JetBrains Mono', 'Consolas', 'Monaco', 'monospace'],
+
+                // 方案3: 技术博客风格 (需要时取消注释，注释掉方案1)
+                sans: ['Roboto', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'system-ui', 'sans-serif'],
+                serif: ['Noto Sans SC', 'SimSun', 'Georgia', 'serif'],
+                mono: ['Fira Code', 'JetBrains Mono', 'Consolas', 'Monaco', 'monospace'],
             },
             colors: {
                 border: 'hsl(var(--border))',
@@ -162,7 +175,7 @@ export default {
         function ({ addUtilities }) {
             addUtilities({
                 '.handwriting': {
-                    fontFamily: '"Kalam", "Comic Sans MS", cursive',
+                    // fontFamily: '"Kalam", "Comic Sans MS", cursive',
                     fontWeight: '400',
                 },
                 '.paper-card': {

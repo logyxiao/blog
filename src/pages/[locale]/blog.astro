@@ -1,0 +1,296 @@
+---
+import { getCollection } from "astro:content";
+import BaseHead from "../../components/BaseHead.astro";
+import BlogCard from "../../components/BlogCard.astro";
+import Footer from "../../components/Footer.astro";
+import Header from "../../components/Header.astro";
+import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
+import { useTranslations, languages } from "../../lib/i18n";
+
+export async function getStaticPaths() {
+    return Object.keys(languages).map((locale) => ({
+        params: { locale },
+    }));
+}
+
+const { locale } = Astro.params;
+const lang = (locale as keyof typeof languages) || "zh-cn";
+const t = useTranslations(lang);
+
+// 获取所有博客文章并按日期降序排列
+const posts = (await getCollection("blog")).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+// 获取所有标签
+const allTags = Array.from(
+    new Set(posts.flatMap((post) => post.data.tags || [])),
+);
+---
+
+<!doctype html>
+<html lang={lang}>
+    <head>
+        <BaseHead
+            title={`${t("blog")} - ${SITE_TITLE}`}
+            description={SITE_DESCRIPTION}
+        />
+    </head>
+    <body>
+        <Header />
+        <main class="min-h-screen bg-background py-12">
+            <div class="container mx-auto px-6">
+                <!-- Header -->
+                <!-- <div class="text-center mb-12">
+                    <h1 class="text-4xl font-bold text-foreground mb-4">
+                        {t("blog")}
+                    </h1>
+                    <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
+                        {t("blogDescription")}
+                    </p>
+                </div> -->
+
+                <!-- Search and Filter -->
+                <div class="mb-12">
+                    <div class="max-w-2xl mx-auto mb-8">
+                        <div class="relative">
+                            <svg
+                                class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                ></path>
+                            </svg>
+                            <input
+                                type="text"
+                                placeholder={t("searchPlaceholder")}
+                                id="search-input"
+                                class="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Tags Filter -->
+                    <div
+                        class="flex flex-wrap gap-2 justify-center"
+                        id="tags-container"
+                    >
+                        <button
+                            class="tag-btn active px-3 py-1.5 text-sm rounded-full border transition-colors duration-200"
+                            data-tag="all"
+                        >
+                            {t("all")}
+                        </button>
+                        {
+                            allTags.map((tag) => (
+                                <button
+                                    class="tag-btn px-3 py-1.5 text-sm rounded-full border transition-colors duration-200"
+                                    data-tag={tag}
+                                >
+                                    {tag}
+                                </button>
+                            ))
+                        }
+                    </div>
+                </div>
+
+                <!-- Results Info -->
+                <div class="mb-8">
+                    <p
+                        class="text-muted-foreground text-center"
+                        id="results-info"
+                    >
+                        找到 {posts.length} 篇文章
+                    </p>
+                </div>
+
+                <!-- Blog Posts Grid -->
+                <div id="posts-container">
+                    <div
+                        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                        id="posts-grid"
+                    >
+                        {
+                            posts.map((post) => (
+                                <div
+                                    class="post-item"
+                                    data-tags={JSON.stringify(
+                                        post.data.tags || [],
+                                    )}
+                                >
+                                    <BlogCard post={post} lang={lang} />
+                                </div>
+                            ))
+                        }
+                    </div>
+
+                    <div class="text-center py-12 hidden" id="no-results">
+                        <p class="text-muted-foreground text-lg mb-4">
+                            {t("noResults")}
+                        </p>
+                        <button
+                            id="clear-filters"
+                            class="px-4 py-2 border border-border rounded-lg text-foreground hover:bg-surface transition-colors duration-200"
+                        >
+                            {t("clearFilters")}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <Footer />
+
+        <style>
+            .tag-btn {
+                background: hsl(var(--background));
+                color: hsl(var(--muted-foreground));
+                border-color: hsl(var(--border));
+            }
+
+            .tag-btn:hover {
+                background: hsl(var(--surface));
+                color: hsl(var(--foreground));
+            }
+
+            .tag-btn.active {
+                background: hsl(var(--primary));
+                color: hsl(var(--primary-foreground));
+                border-color: hsl(var(--primary));
+            }
+        </style>
+
+        <script>
+            // 搜索和筛选功能
+            const searchInput = document.getElementById(
+                "search-input",
+            ) as HTMLInputElement;
+            const tagsContainer = document.getElementById(
+                "tags-container",
+            ) as HTMLElement;
+            const postsGrid = document.getElementById(
+                "posts-grid",
+            ) as HTMLElement;
+            const noResults = document.getElementById(
+                "no-results",
+            ) as HTMLElement;
+            const resultsInfo = document.getElementById(
+                "results-info",
+            ) as HTMLElement;
+            const clearFiltersBtn = document.getElementById(
+                "clear-filters",
+            ) as HTMLElement;
+
+            let currentSearchTerm = "";
+            let currentTag = "all";
+            let allPosts: NodeListOf<Element>;
+
+            // 初始化
+            function init() {
+                allPosts = document.querySelectorAll(".post-item");
+                updateResults();
+            }
+
+            // 搜索功能
+            searchInput?.addEventListener("input", (e) => {
+                currentSearchTerm = (
+                    e.target as HTMLInputElement
+                ).value.toLowerCase();
+                updateResults();
+            });
+
+            // 标签筛选
+            tagsContainer?.addEventListener("click", (e) => {
+                const target = e.target as HTMLElement;
+                if (target.classList.contains("tag-btn")) {
+                    // 更新活跃标签
+                    document
+                        .querySelectorAll(".tag-btn")
+                        .forEach((btn) => btn.classList.remove("active"));
+                    target.classList.add("active");
+
+                    currentTag = target.getAttribute("data-tag") || "all";
+                    updateResults();
+                }
+            });
+
+            // 清除筛选
+            clearFiltersBtn?.addEventListener("click", () => {
+                currentSearchTerm = "";
+                currentTag = "all";
+                searchInput.value = "";
+
+                document
+                    .querySelectorAll(".tag-btn")
+                    .forEach((btn) => btn.classList.remove("active"));
+                document
+                    .querySelector('[data-tag="all"]')
+                    ?.classList.add("active");
+
+                updateResults();
+            });
+
+            // 更新搜索结果
+            function updateResults() {
+                let visibleCount = 0;
+
+                allPosts.forEach((post) => {
+                    const postElement = post as HTMLElement;
+                    const tags = JSON.parse(
+                        postElement.getAttribute("data-tags") || "[]",
+                    );
+                    const title =
+                        postElement
+                            .querySelector("h2")
+                            ?.textContent?.toLowerCase() || "";
+                    const excerpt =
+                        postElement
+                            .querySelector("p")
+                            ?.textContent?.toLowerCase() || "";
+
+                    const matchesSearch =
+                        !currentSearchTerm ||
+                        title.includes(currentSearchTerm) ||
+                        excerpt.includes(currentSearchTerm);
+
+                    const matchesTag =
+                        currentTag === "all" || tags.includes(currentTag);
+
+                    if (matchesSearch && matchesTag) {
+                        postElement.style.display = "block";
+                        visibleCount++;
+                    } else {
+                        postElement.style.display = "none";
+                    }
+                });
+
+                // 更新结果信息
+                if (visibleCount === 0) {
+                    postsGrid.style.display = "none";
+                    noResults.style.display = "block";
+                } else {
+                    postsGrid.style.display = "grid";
+                    noResults.style.display = "none";
+                }
+
+                // 更新结果数量显示
+                let infoText = `找到 ${visibleCount} 篇文章`;
+                if (currentTag !== "all") {
+                    infoText = `标签 "${currentTag}" · ${infoText}`;
+                }
+                if (currentSearchTerm) {
+                    infoText += ` · 搜索 "${currentSearchTerm}"`;
+                }
+                resultsInfo.textContent = infoText;
+            }
+
+            // 页面加载完成后初始化
+            document.addEventListener("DOMContentLoaded", init);
+        </script>
+    </body>
+</html>

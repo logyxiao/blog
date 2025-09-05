@@ -33,7 +33,14 @@ export const translations = {
         'navigation.allPosts': '所有文章',
         'navigation.aboutMe': '关于我',
         'tags.title': '热门标签',
-        'date.format': 'YYYY年M月D日'
+        'date.format': 'YYYY年M月D日',
+        'blog': '博客文章',
+        'blogDescription': '探索技术世界，分享开发经验，记录学习成长的点点滴滴',
+        'searchPlaceholder': '搜索文章标题或内容...',
+        'all': '全部',
+        'foundPosts': '找到 {count} 篇文章',
+        'noResults': '没有找到匹配的文章',
+        'clearFilters': '清除筛选条件'
     },
     en: {
         'site.title': 'Personal Blog - Sharing Tech Insights & Life Thoughts',
@@ -60,7 +67,14 @@ export const translations = {
         'navigation.allPosts': 'All Posts',
         'navigation.aboutMe': 'About Me',
         'tags.title': 'Popular Tags',
-        'date.format': 'MMM D, YYYY'
+        'date.format': 'MMM D, YYYY',
+        'blog': 'Blog Posts',
+        'blogDescription': 'Explore the tech world, share development experience, and record learning growth',
+        'searchPlaceholder': 'Search articles title or content...',
+        'all': 'All',
+        'foundPosts': 'Found {count} posts',
+        'noResults': 'No matching articles found',
+        'clearFilters': 'Clear Filters'
     }
 } as const
 
