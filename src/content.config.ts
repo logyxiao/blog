@@ -25,7 +25,6 @@ const movies = defineCollection({
 		z.object({
 			title: z.string(),
 			year: z.number(),
-			genre: z.array(z.string()),
 			myRating: z.number().min(0).max(10),
 			doubanRating: z.number().min(0).max(10),
 			review: z.string(),

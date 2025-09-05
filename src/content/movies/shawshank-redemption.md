@@ -1,7 +1,6 @@
 ---
 title: '肖申克的救赎'
 year: 1994
-genre: ['剧情', '犯罪']
 myRating: 9.8
 doubanRating: 9.7
 review: '永远的经典，关于希望与自由的赞歌'
