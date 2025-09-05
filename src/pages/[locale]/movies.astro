@@ -1,0 +1,525 @@
+---
+import { getCollection } from "astro:content";
+import BaseHead from "../../components/BaseHead.astro";
+import MovieCard from "../../components/MovieCard.astro";
+import Footer from "../../components/Footer.astro";
+import Header from "../../components/Header.astro";
+import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
+import { useTranslations, languages } from "../../lib/i18n";
+
+export async function getStaticPaths() {
+    return Object.keys(languages).map((locale) => ({
+        params: { locale },
+    }));
+}
+
+const { locale } = Astro.params;
+const lang = (locale as keyof typeof languages) || "zh-cn";
+const t = useTranslations(lang);
+
+// 获取所有影视作品并按观看日期降序排列
+const movies = (await getCollection("movies")).sort(
+    (a, b) => b.data.watchedDate.valueOf() - a.data.watchedDate.valueOf(),
+);
+
+// 获取所有类别
+const categories = [
+    "All",
+    "Movie",
+    "TV Series",
+    "Documentary",
+    "Variety Show",
+    "Animation",
+    "Short Film",
+];
+
+// 统计数据
+const stats = {
+    total: movies.length,
+    avgMyRating:
+        movies.length > 0
+            ? (
+                  movies.reduce((sum, movie) => sum + movie.data.myRating, 0) /
+                  movies.length
+              ).toFixed(1)
+            : "0",
+    avgDoubanRating:
+        movies.length > 0
+            ? (
+                  movies.reduce(
+                      (sum, movie) => sum + movie.data.doubanRating,
+                      0,
+                  ) / movies.length
+              ).toFixed(1)
+            : "0",
+    categoryStats: categories.slice(1).map((category) => ({
+        category,
+        count: movies.filter((movie) => movie.data.category === category)
+            .length,
+    })),
+};
+
+// 类别翻译
+const categoryTranslations = {
+    All: lang === "zh-cn" ? "全部" : "All",
+    Movie: lang === "zh-cn" ? "电影" : "Movie",
+    "TV Series": lang === "zh-cn" ? "电视剧" : "TV Series",
+    Documentary: lang === "zh-cn" ? "纪录片" : "Documentary",
+    "Variety Show": lang === "zh-cn" ? "综艺" : "Variety Show",
+    Animation: lang === "zh-cn" ? "动漫" : "Animation",
+    "Short Film": lang === "zh-cn" ? "短片" : "Short Film",
+};
+---
+
+<!doctype html>
+<html lang={lang}>
+    <head>
+        <BaseHead
+            title={`${t("nav.movies")} - ${SITE_TITLE}`}
+            description={SITE_DESCRIPTION}
+        />
+    </head>
+    <body>
+        <Header />
+        <main
+            class="min-h-screen bg-background paper-texture p-4 sm:p-6 lg:p-8"
+        >
+            <div class="max-w-7xl mx-auto">
+                <!-- 页面标题 -->
+                <div class="text-center mb-8">
+                    <h1 class="text-4xl font-bold text-foreground mb-4">
+                        {t("movies.title")}
+                    </h1>
+                    <p class="text-muted-foreground">
+                        {t("movies.subtitle")}
+                    </p>
+                </div>
+
+                <!-- 左右布局容器 -->
+                <div class="flex flex-col lg:flex-row gap-6">
+                    <!-- 左侧：影视列表 -->
+                    <div class="flex-1 lg:w-2/3">
+                        <!-- 搜索栏 -->
+                        <div class="mb-6">
+                            <div class="relative">
+                                <svg
+                                    class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                    ></path>
+                                </svg>
+                                <input
+                                    type="text"
+                                    placeholder={t("movies.searchPlaceholder")}
+                                    id="search-input"
+                                    class="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent paper-card"
+                                />
+                            </div>
+                        </div>
+
+                        <!-- 影视列表 -->
+                        <div class="space-y-4" id="movies-container">
+                            {
+                                movies.length > 0 ? (
+                                    movies.map((movie) => (
+                                        <div
+                                            class="movie-item"
+                                            data-category={movie.data.category}
+                                            data-title={movie.data.title.toLowerCase()}
+                                            data-genre={JSON.stringify(
+                                                movie.data.genre,
+                                            )}
+                                        >
+                                            <MovieCard
+                                                movie={movie}
+                                                lang={lang}
+                                            />
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div class="paper-card p-8 text-center">
+                                        <p class="text-muted-foreground">
+                                            {t("movies.noMovies")}
+                                        </p>
+                                    </div>
+                                )
+                            }
+
+                            <div
+                                class="text-center py-12 hidden"
+                                id="no-results"
+                            >
+                                <p class="text-muted-foreground text-lg mb-4">
+                                    {t("movies.noResults")}
+                                </p>
+                                <button
+                                    id="clear-filters"
+                                    class="px-4 py-2 border border-border rounded-lg text-foreground hover:bg-surface transition-colors duration-200"
+                                >
+                                    {t("clearFilters")}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 右侧：筛选和统计面板 -->
+                    <div class="lg:w-1/3 space-y-6">
+                        <!-- 类别筛选 -->
+                        <div class="paper-card p-6">
+                            <h3
+                                class="text-lg font-bold mb-4 text-foreground flex items-center gap-2"
+                            >
+                                <svg
+                                    class="h-5 w-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z"
+                                    ></path>
+                                </svg>
+                                {t("movies.categoryFilter")}
+                            </h3>
+                            <div
+                                class="flex flex-wrap gap-2"
+                                id="category-buttons"
+                            >
+                                {
+                                    categories.map((category) => (
+                                        <button
+                                            class={`category-btn px-3 py-1.5 text-sm rounded-full border transition-colors duration-200 ${category === "All" ? "active" : ""}`}
+                                            data-category={category}
+                                        >
+                                            {
+                                                categoryTranslations[
+                                                    category as keyof typeof categoryTranslations
+                                                ]
+                                            }
+                                        </button>
+                                    ))
+                                }
+                            </div>
+                        </div>
+
+                        <!-- 统计信息 -->
+                        <div class="paper-card p-6">
+                            <h3
+                                class="text-lg font-bold mb-4 text-foreground flex items-center gap-2"
+                            >
+                                <svg
+                                    class="h-5 w-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                                    ></path>
+                                </svg>
+                                {t("movies.stats")}
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="text-center">
+                                        <div
+                                            class="text-2xl font-bold text-primary"
+                                        >
+                                            {stats.total}
+                                        </div>
+                                        <div
+                                            class="text-xs text-muted-foreground"
+                                        >
+                                            {t("movies.totalCount")}
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div
+                                            class="text-2xl font-bold text-blue-600"
+                                        >
+                                            {stats.avgMyRating}
+                                        </div>
+                                        <div
+                                            class="text-xs text-muted-foreground"
+                                        >
+                                            {t("movies.avgRating")}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-center">
+                                    <div
+                                        class="text-lg font-semibold text-yellow-600"
+                                    >
+                                        {stats.avgDoubanRating}
+                                    </div>
+                                    <div class="text-xs text-muted-foreground">
+                                        {t("movies.avgDoubanRating")}
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <h4 class="text-sm font-medium">
+                                        {t("movies.categoryDistribution")}
+                                    </h4>
+                                    {
+                                        stats.categoryStats.map(
+                                            ({ category, count }) => (
+                                                <div class="flex justify-between items-center">
+                                                    <span class="text-sm text-muted-foreground">
+                                                        {
+                                                            categoryTranslations[
+                                                                category as keyof typeof categoryTranslations
+                                                            ]
+                                                        }
+                                                    </span>
+                                                    <span class="px-2 py-0.5 text-xs bg-surface text-muted-foreground rounded border border-border">
+                                                        {count}
+                                                    </span>
+                                                </div>
+                                            ),
+                                        )
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 快速筛选 -->
+                        <div class="paper-card p-6">
+                            <h3 class="text-lg font-bold mb-4 text-foreground">
+                                {t("movies.quickFilter")}
+                            </h3>
+                            <div class="space-y-2">
+                                <button
+                                    class="quick-filter-btn w-full text-left px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-surface rounded transition-colors duration-200"
+                                    data-action="show-all"
+                                >
+                                    {t("movies.showAll")}
+                                </button>
+                                <button
+                                    class="quick-filter-btn w-full text-left px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-surface rounded transition-colors duration-200"
+                                    data-action="high-rated"
+                                >
+                                    {t("movies.highRated")}
+                                </button>
+                                <button
+                                    class="quick-filter-btn w-full text-left px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-surface rounded transition-colors duration-200"
+                                    data-action="recent"
+                                >
+                                    {t("movies.recentWatched")}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <Footer />
+
+        <style>
+            .category-btn {
+                background: hsl(var(--background));
+                color: hsl(var(--muted-foreground));
+                border-color: hsl(var(--border));
+            }
+
+            .category-btn:hover {
+                background: hsl(var(--surface));
+                color: hsl(var(--foreground));
+            }
+
+            .category-btn.active {
+                background: hsl(var(--primary));
+                color: hsl(var(--primary-foreground));
+                border-color: hsl(var(--primary));
+            }
+        </style>
+
+        <script>
+            // 搜索和筛选功能
+            const searchInput = document.getElementById(
+                "search-input",
+            ) as HTMLInputElement;
+            const categoryButtons = document.getElementById(
+                "category-buttons",
+            ) as HTMLElement;
+            const moviesContainer = document.getElementById(
+                "movies-container",
+            ) as HTMLElement;
+            const noResults = document.getElementById(
+                "no-results",
+            ) as HTMLElement;
+            const clearFiltersBtn = document.getElementById(
+                "clear-filters",
+            ) as HTMLElement;
+            const quickFilterBtns =
+                document.querySelectorAll(".quick-filter-btn");
+
+            let currentSearchTerm = "";
+            let currentCategory = "All";
+            let allMovies: NodeListOf<Element>;
+
+            // 初始化
+            function init() {
+                allMovies = document.querySelectorAll(".movie-item");
+                updateResults();
+            }
+
+            // 搜索功能
+            searchInput?.addEventListener("input", (e) => {
+                currentSearchTerm = (
+                    e.target as HTMLInputElement
+                ).value.toLowerCase();
+                updateResults();
+            });
+
+            // 类别筛选
+            categoryButtons?.addEventListener("click", (e) => {
+                const target = e.target as HTMLElement;
+                if (target.classList.contains("category-btn")) {
+                    // 更新活跃按钮
+                    document
+                        .querySelectorAll(".category-btn")
+                        .forEach((btn) => btn.classList.remove("active"));
+                    target.classList.add("active");
+
+                    currentCategory =
+                        target.getAttribute("data-category") || "All";
+                    updateResults();
+                }
+            });
+
+            // 快速筛选
+            quickFilterBtns.forEach((btn) => {
+                btn.addEventListener("click", (e) => {
+                    const action = (e.target as HTMLElement).getAttribute(
+                        "data-action",
+                    );
+
+                    switch (action) {
+                        case "show-all":
+                            currentSearchTerm = "";
+                            currentCategory = "All";
+                            searchInput.value = "";
+                            document
+                                .querySelectorAll(".category-btn")
+                                .forEach((btn) =>
+                                    btn.classList.remove("active"),
+                                );
+                            document
+                                .querySelector('[data-category="All"]')
+                                ?.classList.add("active");
+                            break;
+                        case "high-rated":
+                            currentSearchTerm = "";
+                            currentCategory = "All";
+                            searchInput.value = "";
+                            document
+                                .querySelectorAll(".category-btn")
+                                .forEach((btn) =>
+                                    btn.classList.remove("active"),
+                                );
+                            document
+                                .querySelector('[data-category="All"]')
+                                ?.classList.add("active");
+                            // 这里可以添加高分筛选逻辑
+                            break;
+                        case "recent":
+                            // 已经按观看日期排序，不需要额外处理
+                            currentSearchTerm = "";
+                            currentCategory = "All";
+                            searchInput.value = "";
+                            document
+                                .querySelectorAll(".category-btn")
+                                .forEach((btn) =>
+                                    btn.classList.remove("active"),
+                                );
+                            document
+                                .querySelector('[data-category="All"]')
+                                ?.classList.add("active");
+                            break;
+                    }
+                    updateResults();
+                });
+            });
+
+            // 清除筛选
+            clearFiltersBtn?.addEventListener("click", () => {
+                currentSearchTerm = "";
+                currentCategory = "All";
+                searchInput.value = "";
+
+                document
+                    .querySelectorAll(".category-btn")
+                    .forEach((btn) => btn.classList.remove("active"));
+                document
+                    .querySelector('[data-category="All"]')
+                    ?.classList.add("active");
+
+                updateResults();
+            });
+
+            // 更新搜索结果
+            function updateResults() {
+                let visibleCount = 0;
+
+                allMovies.forEach((movie) => {
+                    const movieElement = movie as HTMLElement;
+                    const category =
+                        movieElement.getAttribute("data-category") || "";
+                    const title = movieElement.getAttribute("data-title") || "";
+                    const genre = JSON.parse(
+                        movieElement.getAttribute("data-genre") || "[]",
+                    );
+
+                    const matchesSearch =
+                        !currentSearchTerm ||
+                        title.includes(currentSearchTerm) ||
+                        genre.some((g: string) =>
+                            g.toLowerCase().includes(currentSearchTerm),
+                        );
+
+                    const matchesCategory =
+                        currentCategory === "All" ||
+                        category === currentCategory;
+
+                    if (matchesSearch && matchesCategory) {
+                        movieElement.style.display = "block";
+                        visibleCount++;
+                    } else {
+                        movieElement.style.display = "none";
+                    }
+                });
+
+                // 更新结果信息
+                if (visibleCount === 0) {
+                    moviesContainer
+                        .querySelector(".space-y-4")
+                        ?.setAttribute("style", "display: none");
+                    noResults.style.display = "block";
+                } else {
+                    moviesContainer
+                        .querySelector(".space-y-4")
+                        ?.setAttribute("style", "display: block");
+                    noResults.style.display = "none";
+                }
+            }
+
+            // 页面加载完成后初始化
+            document.addEventListener("DOMContentLoaded", init);
+        </script>
+    </body>
+</html>
