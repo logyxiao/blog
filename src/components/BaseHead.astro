@@ -22,6 +22,29 @@ const { title, description, image = FallbackImage } = Astro.props;
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="sitemap" href="/sitemap-index.xml" />
+
+<!-- 防止样式闪烁的优化 -->
+<style is:inline>
+	/* 防止FOUC的最小CSS */
+	html { visibility: hidden; opacity: 0; }
+	html.loaded { visibility: visible; opacity: 1; transition: opacity 0.3s ease; }
+	/* 基础字体和背景 */
+	body { 
+		font-family: 'Roboto', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+		background-color: #ffffff;
+		color: #171717;
+		line-height: 1.6;
+	}
+</style>
+
+<!-- CSS预加载 -->
+<link rel="preload" href="/_astro/global.css" as="style" />
+
+<!-- Font preloads -->
+<link rel="preload" href="/fonts/atkinson-regular.woff" as="font" type="font/woff" crossorigin />
+<link rel="preload" href="/fonts/atkinson-bold.woff" as="font" type="font/woff" crossorigin />
+
+<!-- RSS Feed -->
 <link
 	rel="alternate"
 	type="application/rss+xml"
@@ -29,10 +52,6 @@ const { title, description, image = FallbackImage } = Astro.props;
 	href={new URL('rss.xml', Astro.site)}
 />
 <meta name="generator" content={Astro.generator} />
-
-<!-- Font preloads -->
-<link rel="preload" href="/fonts/atkinson-regular.woff" as="font" type="font/woff" crossorigin />
-<link rel="preload" href="/fonts/atkinson-bold.woff" as="font" type="font/woff" crossorigin />
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
@@ -55,3 +74,20 @@ const { title, description, image = FallbackImage } = Astro.props;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image.src, Astro.url)} />
+
+<!-- 防止FOUC的脚本 -->
+<script is:inline>
+	// 页面加载完成后显示内容
+	document.addEventListener('DOMContentLoaded', () => {
+		document.documentElement.classList.add('loaded');
+	});
+	
+	// 如果DOMContentLoaded已经触发（例如缓存页面）
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', () => {
+			document.documentElement.classList.add('loaded');
+		});
+	} else {
+		document.documentElement.classList.add('loaded');
+	}
+</script>

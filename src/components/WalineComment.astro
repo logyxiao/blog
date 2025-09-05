@@ -1,0 +1,157 @@
+---
+interface Props {
+	path?: string;
+	lang?: string;
+}
+
+const { path = Astro.url.pathname, lang = "zh-cn" } = Astro.props;
+---
+
+<div id="waline" class="waline-container"></div>
+
+<script>
+import { init } from '@waline/client';
+import '@waline/client/style';
+
+if (typeof window !== 'undefined') {
+	// Waline 初始化
+	init({
+		el: '#waline',
+		serverURL: 'https://vercel-blog-sooty-psi.vercel.app/', // 你需要替换为实际的服务端URL
+		path: window.location.pathname,
+		lang: document.documentElement.lang || 'zh-cn',
+		
+		// 基础配置
+		pageSize: 10,
+		wordLimit: [0, 1000],
+		
+		// 表情包配置
+		emoji: [
+			'https://unpkg.com/@waline/emojis@1.2.0/weibo',
+			'https://unpkg.com/@waline/emojis@1.2.0/alus',
+			'https://unpkg.com/@waline/emojis@1.2.0/bilibili'
+		],
+		
+		// 搜索配置
+		search: false,
+		
+		// 头像配置
+		requiredMeta: ['nick', 'mail'],
+		
+		// 国际化
+		locale: {
+			placeholder: '欢迎留言讨论...',
+			sofa: '快来发表第一条评论吧！',
+			submit: '提交',
+			like: '喜欢',
+			cancelLike: '取消喜欢',
+			reply: '回复',
+			more: '加载更多...',
+			preview: '预览',
+			emoji: '表情',
+			uploadImage: '上传图片',
+			seconds: '秒前',
+			minutes: '分钟前',
+			hours: '小时前',
+			days: '天前',
+			now: '刚刚',
+			uploading: '正在上传',
+			login: '登录',
+			logout: '退出',
+			admin: '博主',
+			sticky: '置顶',
+			word: '字',
+			wordHint: '评论字数应在 $0 到 $1 字之间！\n 当前字数：$2',
+			anonymous: '匿名',
+			level0: '潜水',
+			level1: '冒泡',
+			level2: '吐槽',
+			level3: '活跃',
+			level4: '话痨',
+			level5: '传说',
+			gif: 'GIF',
+			gifSearchPlaceholder: '搜索 GIF'
+		}
+	});
+}
+</script>
+
+<style>
+.waline-container {
+	margin-top: 2rem;
+	padding: 1.5rem;
+	background: #fff;
+	border-radius: 8px;
+	border: 1px solid #e9ecef;
+}
+
+/* 自定义Waline样式 */
+:global(.wl-container) {
+	--waline-font-size: 14px;
+	--waline-white: #fff;
+	--waline-light-grey: #f8f9fa;
+	--waline-dark-grey: #6c757d;
+	--waline-color: #495057;
+	--waline-bg-color: #fff;
+	--waline-bg-color-light: #f8f9fa;
+	--waline-bg-color-hover: #f5f5f5;
+	--waline-border-color: #dee2e6;
+	--waline-disable-bg-color: #f8f9fa;
+	--waline-disable-color: #6c757d;
+	--waline-bq-color: #495057;
+	--waline-info-bg-color: #d1ecf1;
+	--waline-info-color: #0c5460;
+}
+
+:global(.wl-editor) {
+	border-radius: 6px;
+	border: 1px solid #dee2e6;
+}
+
+:global(.wl-input) {
+	border-radius: 4px;
+	border: 1px solid #dee2e6;
+}
+
+:global(.wl-btn) {
+	border-radius: 4px;
+	background: #000;
+	color: #fff;
+	border: none;
+	transition: all 0.2s ease;
+}
+
+:global(.wl-btn:hover) {
+	background: #333;
+}
+
+:global(.wl-card) {
+	border-radius: 6px;
+	border: 1px solid #e9ecef;
+	box-shadow: none;
+}
+
+:global(.wl-head) {
+	border-bottom: 1px solid #e9ecef;
+}
+
+:global(.wl-meta) {
+	color: #6c757d;
+	font-size: 13px;
+}
+
+:global(.wl-content) {
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+	.waline-container {
+		margin: 1rem -1rem 0;
+		border-radius: 0;
+		border-left: none;
+		border-right: none;
+	}
+}
+</style>

@@ -5,6 +5,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
+import WalineComment from '../components/WalineComment.astro';
 import { useTranslations, languages, formatDate }  from '../lib/i18n';
 
 type Props = CollectionEntry<'blog'>['data'] & {
@@ -84,6 +85,9 @@ const { title, description, pubDate, updatedDate, heroImage, headings = [] } = A
 				<div class="blog-content-toc-wrapper">
 					<div class="blog-content-main prose blog-content-centered">
 						<slot />
+						
+						<!-- 评论区域 -->
+						<WalineComment lang={lang} />
 					</div>
 					{headings.length > 0 && (
 						<nav class="toc-sidebar">
