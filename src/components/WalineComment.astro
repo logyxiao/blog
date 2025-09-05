@@ -25,6 +25,10 @@ if (typeof window !== 'undefined') {
 		pageSize: 10,
 		wordLimit: [0, 1000],
 		
+		// 隐私配置 - 不显示用户代理信息（浏览器版本和系统）
+		meta: ['nick', 'mail'],
+		requiredMeta: ['nick', 'mail'],
+		
 		// 表情包配置
 		emoji: [
 			'https://unpkg.com/@waline/emojis@1.2.0/weibo',
@@ -35,8 +39,8 @@ if (typeof window !== 'undefined') {
 		// 搜索配置
 		search: false,
 		
-		// 头像配置
-		requiredMeta: ['nick', 'mail'],
+		// 图片上传（可选，如果不需要可以设为false）
+		imageUploader: false,
 		
 		// 国际化
 		locale: {
@@ -77,81 +81,375 @@ if (typeof window !== 'undefined') {
 </script>
 
 <style>
+/* 现代简约评论区样式 */
+
 .waline-container {
-	margin-top: 2rem;
-	padding: 1.5rem;
-	background: #fff;
-	border-radius: 8px;
-	border: 1px solid #e9ecef;
-}
-
-/* 自定义Waline样式 */
-:global(.wl-container) {
-	--waline-font-size: 14px;
-	--waline-white: #fff;
-	--waline-light-grey: #f8f9fa;
-	--waline-dark-grey: #6c757d;
-	--waline-color: #495057;
-	--waline-bg-color: #fff;
-	--waline-bg-color-light: #f8f9fa;
-	--waline-bg-color-hover: #f5f5f5;
-	--waline-border-color: #dee2e6;
-	--waline-disable-bg-color: #f8f9fa;
-	--waline-disable-color: #6c757d;
-	--waline-bq-color: #495057;
-	--waline-info-bg-color: #d1ecf1;
-	--waline-info-color: #0c5460;
-}
-
-:global(.wl-editor) {
-	border-radius: 6px;
-	border: 1px solid #dee2e6;
-}
-
-:global(.wl-input) {
-	border-radius: 4px;
-	border: 1px solid #dee2e6;
-}
-
-:global(.wl-btn) {
-	border-radius: 4px;
-	background: #000;
-	color: #fff;
+	margin-top: 3rem;
+	padding: 0;
+	background: transparent;
 	border: none;
+}
+
+.waline-container::before {
+	content: "💬 评论交流";
+	display: block;
+	font-size: 1.25rem;
+	font-weight: 600;
+	color: #1f2937;
+	margin-bottom: 2rem;
+	padding-bottom: 0.75rem;
+	border-bottom: 2px solid #e5e7eb;
+	letter-spacing: 0.05em;
+}
+
+:global(.wl-container) {
+	--waline-font-size: 15px;
+	--waline-white: #ffffff;
+	--waline-light-grey: #f8fafc;
+	--waline-dark-grey: #64748b;
+	--waline-color: #334155;
+	--waline-bg-color: #ffffff;
+	--waline-bg-color-light: #f8fafc;
+	--waline-bg-color-hover: #f1f5f9;
+	--waline-border-color: #e2e8f0;
+	--waline-disable-bg-color: #f8fafc;
+	--waline-disable-color: #94a3b8;
+	--waline-bq-color: #475569;
+	--waline-info-bg-color: #dbeafe;
+	--waline-info-color: #1e40af;
+	
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* 编辑器样式优化 */
+:global(.wl-editor) {
+	background: #ffffff;
+	border: 2px solid #e2e8f0;
+	border-radius: 12px;
+	padding: 1.25rem;
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+	transition: all 0.3s ease;
+	margin-bottom: 1.5rem;
+}
+
+:global(.wl-editor:focus-within) {
+	border-color: #3b82f6;
+	box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+	transform: translateY(-1px);
+}
+
+/* 输入框样式 */
+:global(.wl-input) {
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	padding: 0.75rem 1rem;
+	font-size: 14px;
 	transition: all 0.2s ease;
+	background: #f8fafc;
+	color: #334155;
+}
+
+:global(.wl-input:focus) {
+	border-color: #3b82f6;
+	box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+	background: #ffffff;
+	outline: none;
+}
+
+:global(.wl-input::placeholder) {
+	color: #94a3b8;
+}
+
+/* 提交按钮样式 */
+:global(.wl-btn) {
+	background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+	color: #ffffff;
+	border: none;
+	border-radius: 8px;
+	padding: 0.75rem 1.5rem;
+	font-weight: 500;
+	font-size: 14px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
 }
 
 :global(.wl-btn:hover) {
-	background: #333;
+	background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+	transform: translateY(-1px);
+	box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
 }
 
+:global(.wl-btn:active) {
+	transform: translateY(0);
+	box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+/* 评论卡片样式 */
 :global(.wl-card) {
-	border-radius: 6px;
-	border: 1px solid #e9ecef;
-	box-shadow: none;
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	border-radius: 12px;
+	margin: 1.5rem 0;
+	overflow: hidden;
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+	transition: all 0.3s ease;
 }
 
+:global(.wl-card:hover) {
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	transform: translateY(-2px);
+	border-color: #cbd5e1;
+}
+
+/* 评论头部 */
 :global(.wl-head) {
-	border-bottom: 1px solid #e9ecef;
+	background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+	border-bottom: 1px solid #e2e8f0;
+	padding: 1rem 1.25rem;
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
 }
 
-:global(.wl-meta) {
-	color: #6c757d;
+/* 用户头像 */
+:global(.wl-avatar) {
+	border-radius: 50%;
+	border: 2px solid #e2e8f0;
+	transition: all 0.2s ease;
+	width: 40px;
+	height: 40px;
+}
+
+:global(.wl-avatar:hover) {
+	border-color: #3b82f6;
+	transform: scale(1.05);
+}
+
+/* 用户信息 */
+:global(.wl-nick) {
+	font-weight: 600;
+	color: #1e293b;
+	font-size: 15px;
+	margin: 0;
+}
+
+/* 管理员标识美化 */
+:global(.wl-tag) {
+	background: linear-gradient(135deg, #f59e0b, #d97706);
+	color: white;
+	padding: 0.25rem 0.5rem;
+	border-radius: 6px;
+	font-size: 11px;
+	font-weight: 500;
+	margin-left: 0.5rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+/* 时间戳 */
+:global(.wl-time) {
+	color: #64748b;
 	font-size: 13px;
+	opacity: 0.8;
+	margin-left: auto;
 }
 
+/* 评论内容 */
 :global(.wl-content) {
+	padding: 1.25rem;
+	font-size: 15px;
+	line-height: 1.7;
+	color: #334155;
+}
+
+:global(.wl-content p) {
+	margin: 0.75rem 0;
+}
+
+:global(.wl-content p:first-child) {
+	margin-top: 0;
+}
+
+:global(.wl-content p:last-child) {
+	margin-bottom: 0;
+}
+
+:global(.wl-content a) {
+	color: #3b82f6;
+	text-decoration: none;
+	border-bottom: 1px solid transparent;
+	transition: all 0.2s ease;
+}
+
+:global(.wl-content a:hover) {
+	border-bottom-color: #3b82f6;
+	background-color: rgba(59, 130, 246, 0.05);
+	padding: 0 2px;
+	border-radius: 2px;
+}
+
+/* 评论操作按钮 */
+:global(.wl-action) {
+	padding: 0.75rem 1.25rem;
+	border-top: 1px solid #f1f5f9;
+	background: #f8fafc;
+	display: flex;
+	gap: 0.5rem;
+}
+
+:global(.wl-action button) {
+	color: #64748b;
+	background: transparent;
+	border: none;
+	padding: 0.5rem 0.75rem;
+	border-radius: 6px;
+	font-size: 13px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+}
+
+:global(.wl-action button:hover) {
+	background: #e2e8f0;
+	color: #334155;
+	transform: translateY(-1px);
+}
+
+/* 回复区域美化 */
+:global(.wl-quote) {
+	background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+	border-left: 4px solid #3b82f6;
+	padding: 0.75rem 1rem;
+	margin: 0.75rem 0;
+	border-radius: 0 8px 8px 0;
 	font-size: 14px;
-	line-height: 1.6;
+	color: #475569;
+}
+
+/* 表情选择器 */
+:global(.wl-emoji) {
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	border-radius: 12px;
+	box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+	padding: 0.5rem;
+}
+
+/* 分页器美化 */
+:global(.wl-page) {
+	margin-top: 2rem;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	gap: 0.5rem;
+}
+
+:global(.wl-page button) {
+	background: #f1f5f9;
+	color: #64748b;
+	border: 1px solid #e2e8f0;
+	padding: 0.5rem 1rem;
+	border-radius: 8px;
+	transition: all 0.2s ease;
+	font-weight: 500;
+}
+
+:global(.wl-page button:hover) {
+	background: #3b82f6;
+	color: #ffffff;
+	border-color: #3b82f6;
+	transform: translateY(-1px);
+}
+
+:global(.wl-page .current) {
+	background: #3b82f6;
+	color: #ffffff;
+	border-color: #3b82f6;
+}
+
+/* 空状态美化 */
+:global(.wl-empty) {
+	text-align: center;
+	padding: 3rem 1rem;
+	color: #64748b;
+}
+
+:global(.wl-empty::before) {
+	content: "💭";
+	display: block;
+	font-size: 2.5rem;
+	margin-bottom: 1rem;
+	opacity: 0.6;
+}
+
+/* 加载状态 */
+:global(.wl-loading) {
+	text-align: center;
+	padding: 2rem;
+	color: #64748b;
+}
+
+/* 隐藏用户代理信息 */
+:global(.wl-meta) {
+	display: none !important;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
 	.waline-container {
-		margin: 1rem -1rem 0;
+		margin: 2rem -1rem 0;
+	}
+	
+	.waline-container::before {
+		margin: 0 1rem 1.5rem;
+		font-size: 1.125rem;
+	}
+	
+	:global(.wl-card) {
 		border-radius: 0;
 		border-left: none;
 		border-right: none;
+		margin: 0.75rem 0;
+	}
+	
+	:global(.wl-editor) {
+		border-radius: 0;
+		border-left: none;
+		border-right: none;
+		margin: 0;
+	}
+	
+	:global(.wl-head),
+	:global(.wl-content),
+	:global(.wl-action) {
+		padding-left: 1rem;
+		padding-right: 1rem;
+	}
+	
+	:global(.wl-page) {
+		padding: 0 1rem;
+		flex-wrap: wrap;
+	}
+}
+
+/* 暗色模式适配（可选） */
+@media (prefers-color-scheme: dark) {
+	.waline-container::before {
+		color: #e2e8f0;
+		border-bottom-color: #374151;
+	}
+	
+	:global(.wl-editor) {
+		background: #1f2937;
+		border-color: #374151;
+	}
+	
+	:global(.wl-card) {
+		background: #1f2937;
+		border-color: #374151;
 	}
 }
 </style>

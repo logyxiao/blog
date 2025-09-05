@@ -42,6 +42,24 @@ serverURL: 'https://your-waline.vercel.app', // 替换为你的Waline服务端UR
 
 访问 `https://your-waline.vercel.app/ui` 可以登录管理界面，管理评论。
 
+### 管理员注册
+**首次访问需要注册管理员账号：**
+1. 首次访问 `/ui` 页面会显示注册界面
+2. 填写邮箱、昵称、密码等信息完成注册
+3. **第一个注册的用户自动成为管理员**
+4. 后续访问使用注册的邮箱和密码登录
+
+### 管理员功能
+- 审核、删除、回复评论
+- 查看评论统计数据
+- 管理用户和权限
+- 配置网站设置
+
+### 安全建议
+- 建议在环境变量中设置 `SECURE_DOMAINS`，限制允许评论的域名
+- 管理员密码要设置复杂一些
+- 定期查看评论，及时处理垃圾评论
+
 ## 6. 可选配置
 
 ### 邮件通知
@@ -54,7 +72,7 @@ serverURL: 'https://your-waline.vercel.app', // 替换为你的Waline服务端UR
 
 ### 安全配置
 - `SECURE_DOMAINS`: 允许的域名（多个用逗号分隔）
-- `DISABLE_USERAGENT`: 禁用UA显示
+- `DISABLE_USERAGENT`: 禁用UA显示（设置为 `true` 可隐藏用户的浏览器和系统信息）
 
 ### 社交登录
 - `GITHUB_ID` + `GITHUB_SECRET`: GitHub登录
