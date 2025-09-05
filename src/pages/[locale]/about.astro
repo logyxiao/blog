@@ -4,7 +4,7 @@ import Footer from "../../components/Footer.astro";
 import Header from "../../components/Header.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
 import { useTranslations, languages } from "../../lib/i18n";
-import AboutHeroImage from "../../assets/blog-placeholder-about.jpg";
+import AboutHeroImage from "../../assets/loading.gif";
 
 export async function getStaticPaths() {
     return Object.keys(languages).map((locale) => ({
@@ -29,20 +29,7 @@ const t = useTranslations(lang);
         <Header />
         <main class="container mx-auto px-4 py-12">
             <div class="max-w-4xl mx-auto">
-                <!-- 头部区域 -->
-                <div class="text-center mb-12">
-                    <img
-                        src={AboutHeroImage.src}
-                        alt={t("about.heroAlt")}
-                        class="w-32 h-32 rounded-full mx-auto mb-6 object-cover border-4 border-border"
-                    />
-                    <h1 class="text-4xl font-bold text-foreground mb-4">
-                        {t("about.title")}
-                    </h1>
-                    <p class="text-xl text-muted-foreground">
-                        {t("about.subtitle")}
-                    </p>
-                </div>
+             
 
                 <!-- 主要内容 -->
                 <div class="grid md:grid-cols-3 gap-8">
@@ -200,7 +187,7 @@ const t = useTranslations(lang);
                             </h3>
                             <div class="space-y-3">
                                 <a
-                                    href="mailto:your-email@example.com"
+                                    href="mailto:logyxiao@gmail.com"
                                     class="flex items-center space-x-3 text-muted-foreground hover:text-foreground transition-colors"
                                 >
                                     <svg
@@ -219,7 +206,7 @@ const t = useTranslations(lang);
                                     <span>{t("about.contact.email")}</span>
                                 </a>
                                 <a
-                                    href="https://github.com/yourusername"
+                                    href="https://github.com/logyxiao"
                                     class="flex items-center space-x-3 text-muted-foreground hover:text-foreground transition-colors"
                                 >
                                     <svg
@@ -232,9 +219,9 @@ const t = useTranslations(lang);
                                         ></path>
                                     </svg>
                                     <span>GitHub</span>
-                                </a>
+                                </a> 
                                 <a
-                                    href="https://twitter.com/yourusername"
+                                    href="https://twitter.com/logyxiao"
                                     class="flex items-center space-x-3 text-muted-foreground hover:text-foreground transition-colors"
                                 >
                                     <svg
@@ -251,60 +238,18 @@ const t = useTranslations(lang);
                             </div>
                         </div>
 
-                        <!-- 最新动态 -->
-                        <div class="paper-card p-6">
-                            <h3 class="text-lg font-bold mb-4 text-foreground">
-                                {t("about.updates.title")}
-                            </h3>
-                            <div class="space-y-3 text-sm">
-                                <div class="flex items-start space-x-2">
-                                    <div
-                                        class="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"
-                                    >
-                                    </div>
-                                    <div>
-                                        <p class="text-muted-foreground">
-                                            {t("about.updates.item1")}
-                                        </p>
-                                        <span
-                                            class="text-xs text-muted-foreground"
-                                            >2024-01-15</span
-                                        >
-                                    </div>
-                                </div>
-                                <div class="flex items-start space-x-2">
-                                    <div
-                                        class="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"
-                                    >
-                                    </div>
-                                    <div>
-                                        <p class="text-muted-foreground">
-                                            {t("about.updates.item2")}
-                                        </p>
-                                        <span
-                                            class="text-xs text-muted-foreground"
-                                            >2024-01-10</span
-                                        >
-                                    </div>
-                                </div>
-                                <div class="flex items-start space-x-2">
-                                    <div
-                                        class="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"
-                                    >
-                                    </div>
-                                    <div>
-                                        <p class="text-muted-foreground">
-                                            {t("about.updates.item3")}
-                                        </p>
-                                        <span
-                                            class="text-xs text-muted-foreground"
-                                            >2024-01-05</span
-                                        >
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    
                     </div>
+                </div>
+
+                   <!-- 底部区域 -->
+                <div class="text-center mb-12">
+                    <img
+                        src={AboutHeroImage.src}
+                        alt={t("about.heroAlt")}
+                        class="w-60 h-60 rounded-full mx-auto mb-6 object-cover "
+                    />
+                  
                 </div>
             </div>
         </main>

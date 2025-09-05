@@ -2,17 +2,17 @@
 title: '肖申克的救赎'
 year: 1994
 genre: ['剧情', '犯罪']
-myRating: 10.0
+myRating: 9.8
 doubanRating: 9.7
 review: '永远的经典，关于希望与自由的赞歌'
 director: '弗兰克·德拉邦特'
 duration: '142分钟'
 category: 'Movie'
-poster: 'https://img2.doubanio.com/view/photo/s_ratio_poster/public/p480747492.jpg'
-watchedDate: '2024-01-01'
+poster: '../../assets/movies/shawshank-redemption.jpg'
+watchedDate: '2024-01-01' 
 tags: ['经典', '励志', '人性']
----
-
+--- 
+ 
 # 肖申克的救赎
 
 这部电影讲述了银行家安迪·杜弗雷恩被冤枉杀害妻子及其情人而入狱后，他与狱友瑞德建立友谊，并在狱中逐步获得尊重的故事。
@@ -37,6 +37,6 @@ tags: ['经典', '励志', '人性']
 
 > "Get busy living, or get busy dying."
 > 
-> "要么忙着活，要么忙着死。"
+> "要么忙着活，要么忙着死。" 
 
 这部电影教会我们，无论身处何种困境，都不要放弃希望，要坚持自己的信念，相信美好的事物终将到来。

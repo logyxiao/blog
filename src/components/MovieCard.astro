@@ -7,7 +7,6 @@ interface Props {
         data: {
             title: string;
             year: number;
-            genre: string[];
             myRating: number;
             doubanRating: number;
             review: string;
@@ -82,16 +81,14 @@ const formatDate = (date: Date) => {
                     <Image
                         src={movie.data.poster}
                         alt={`${movie.data.title} poster`}
-                        width={96}
-                        height={128}
-                        class="w-20 h-28 sm:w-24 sm:h-32 object-cover rounded-lg border border-border"
+                        class="w-32 object-cover rounded-lg border border-border"
                         loading="lazy"
                     />
                 ) : (
                     <img
                         src={movie.data.poster}
                         alt={`${movie.data.title} poster`}
-                        class="w-20 h-28 sm:w-24 sm:h-32 object-cover rounded-lg border border-border"
+                        class="w-32 object-cover rounded-lg border border-border"
                         loading="lazy"
                     />
                 )
@@ -115,37 +112,39 @@ const formatDate = (date: Date) => {
             <!-- 类别和时长 -->
             <div class="flex items-center gap-2 text-sm text-muted-foreground">
                 <span
-                    class="px-2 py-1 bg-surface rounded text-xs border border-border"
+                    class="px-3 py-1 bg-surface rounded text-xs border border-border"
                 >
                     {categoryMap[movie.data.category]}
                 </span>
                 <span>•</span>
                 <span>{movie.data.duration}</span>
-                <span>•</span>
+                <span>•</span> 
                 <span>{movie.data.director}</span>
             </div>
 
+ 
+        
+
+            <!-- 简短评价 -->
+            <p
+                class="text-sm text-muted-foreground line-clamp-2 leading-relaxed min-h-14"
+            >
+                {movie.data.review}
+            </p>
             <!-- 类型标签 -->
             <div class="flex flex-wrap gap-1">
                 {
-                    movie.data.genre
+                    movie.data.tags
                         .slice(0, 3)
-                        .map((g) => (
-                            <span class="px-2 py-0.5 text-xs bg-surface text-muted-foreground rounded border border-border">
+                        .map((g) => ( 
+                            <span class="px-3 mr-2 py-0.5 text-xs bg-surface text-muted-foreground rounded border border-border">
                                 {g}
                             </span>
                         ))
                 }
-                {
-                    movie.data.genre.length > 3 && (
-                        <span class="px-2 py-0.5 text-xs bg-surface text-muted-foreground rounded border border-border">
-                            +{movie.data.genre.length - 3}
-                        </span>
-                    )
-                }
             </div>
 
-            <!-- 评分区域 -->
+                <!-- 评分区域 -->
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <!-- 我的评分 -->
@@ -226,31 +225,6 @@ const formatDate = (date: Date) => {
                     {formatDate(movie.data.watchedDate)}
                 </span>
             </div>
-
-            <!-- 简短评价 -->
-            <p
-                class="text-sm text-muted-foreground line-clamp-2 leading-relaxed"
-            >
-                {movie.data.review}
-            </p>
-
-            <!-- 标签 -->
-            {
-                movie.data.tags && movie.data.tags.length > 0 && (
-                    <div class="flex flex-wrap gap-1">
-                        {movie.data.tags.slice(0, 3).map((tag) => (
-                            <span class="px-2 py-0.5 text-xs bg-primary/10 text-primary rounded">
-                                #{tag}
-                            </span>
-                        ))}
-                        {movie.data.tags.length > 3 && (
-                            <span class="px-2 py-0.5 text-xs bg-primary/10 text-primary rounded">
-                                +{movie.data.tags.length - 3}
-                            </span>
-                        )}
-                    </div>
-                )
-            }
         </div>
     </div>
 </div>
