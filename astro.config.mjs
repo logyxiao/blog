@@ -1,6 +1,7 @@
 // @ts-check
 
 import mdx from '@astrojs/mdx';
+import adapter from '@astrojs/adapter-static';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwind from '@astrojs/tailwind';
@@ -8,7 +9,7 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://example.com',
+	site: 'https://logyxiao.cc',
 	i18n: {
 		defaultLocale: 'zh-cn',
 		locales: ['zh-cn', 'en'],
@@ -16,24 +17,25 @@ export default defineConfig({
 			prefixDefaultLocale: false,
 		},
 		fallback: {
-			'en': "zh-cn"
+			'en': 'zh-cn',
 		},
 	},
-
 	integrations: [
 		mdx(),
 		sitemap(),
 		react(),
 		tailwind({
 			applyBaseStyles: false, // 我们将使用自定义的全局样式
-			configFile: './tailwind.config.mjs'
-		})
+			configFile: './tailwind.config.mjs',
+		}),
 	],
 	vite: {
 		resolve: {
 			alias: {
-				'@': '/src'
-			}
-		}
-	}
+				'@': '/src',
+			},
+		},
+	},
+	output: 'static',
+	adapter: adapter(),
 });
