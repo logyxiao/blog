@@ -15,8 +15,12 @@ jobs:
           version: 8
       - run: pnpm install
       - run: pnpm run build
-      - name: Deploy to GitHub Pages
+      - name: Deploy to logyxiao.github.io
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          personal_token: ${{ secrets.GH_PAGES_TOKEN }}
+          external_repository: logyxiao/logyxiao.github.io
           publish_dir: ./dist
+          publish_branch: main
+          user_name: github-actions[bot]
+          user_email: github-actions[bot]@users.noreply.github.com
