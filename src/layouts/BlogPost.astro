@@ -26,18 +26,22 @@ const { title, description, pubDate, updatedDate, heroImage, headings = [] } = A
 				width: calc(100% - 2em);
 				max-width: 100%;
 				margin: 0;
+				padding: 0;
 			}
 			.hero-image {
 				width: 100%;
+				padding: 0 1rem;
 			}
 			.hero-image img {
 				display: block;
 				margin: 0 auto;
 				border-radius: 12px;
 				box-shadow: var(--box-shadow);
+				max-width: 100%;
+				height: auto;
 			}
 			.prose {
-				width: 720px;
+				width: 100%;
 				max-width: calc(100% - 2em);
 				margin: auto;
 				padding: 1em;
@@ -46,19 +50,36 @@ const { title, description, pubDate, updatedDate, heroImage, headings = [] } = A
 			.title {
 				text-align: center;
 				line-height: 1;
+				padding: 0 1rem;
 			}
 			.title h1 {
 				margin: 0 0 0.5em 0;
 				border-bottom:none;
+				font-size: clamp(1.5rem, 5vw, 2.5rem);
 			}
 			.date {
 				margin-bottom: 0.5em;
 				color: rgb(var(--gray));
-				/* font-style: italic; */
 				color: #555;
+				font-size: clamp(0.875rem, 3vw, 1rem);
 			}
 			.last-updated-on {
 				font-style: italic;
+			}
+			
+			@media (max-width: 768px) {
+				main {
+					width: 100%;
+				}
+				.hero-image {
+					padding: 0 0.5rem;
+				}
+				.prose {
+					padding: 0.5em;
+				}
+				.title {
+					padding: 0 0.5rem;
+				}
 			}
 		</style>
 	</head>
@@ -347,8 +368,56 @@ if (typeof window !== 'undefined') {
 }
 
 @media (max-width: 900px) {
-	.toc-sidebar { display: none; }
-	.blog-content-toc-wrapper { flex-direction: column; }
-	.blog-content-centered { max-width: 100vw; padding: 1.2rem 0.5rem; }
+	.toc-sidebar { 
+		display: none; 
+	}
+	.blog-content-toc-wrapper { 
+		flex-direction: column;
+		padding: 0;
+	}
+	.blog-content-centered { 
+		max-width: 100%;
+		margin: 0;
+		padding: 1rem;
+		border-radius: 0;
+		box-shadow: none;
+	}
+}
+
+@media (max-width: 768px) {
+	.blog-content-centered {
+		padding: 0.75rem;
+	}
+	
+	.blog-content-centered h1 a,
+	.blog-content-centered h2 a,
+	.blog-content-centered h3 a,
+	.blog-content-centered h4 a,
+	.blog-content-centered h5 a,
+	.blog-content-centered h6 a {
+		left: -1rem;
+	}
+	
+	.copy-btn {
+		top: 6px;
+		right: 8px;
+		font-size: 0.75em;
+		padding: 0.15em 0.6em;
+	}
+}
+
+@media (max-width: 480px) {
+	.blog-content-centered {
+		padding: 0.5rem;
+	}
+	
+	.blog-content-centered h1 a,
+	.blog-content-centered h2 a,
+	.blog-content-centered h3 a,
+	.blog-content-centered h4 a,
+	.blog-content-centered h5 a,
+	.blog-content-centered h6 a {
+		left: -0.75rem;
+	}
 }
 </style>

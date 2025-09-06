@@ -45,45 +45,58 @@ const popularTags = Array.from(tagCounts.entries())
     <body>
         <Header />
         <main class="container mx-auto px-4 py-8">
-            <!-- 主要内容区域 - 左右分栏布局 -->
-            <div class="grid lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-                <!-- 左侧主要内容 - 时间轴 -->
-                <section class="lg:col-span-3">
-                    <div class="timeline-container">
-                        {
-                            posts.map((post, index) => (
-                                <article class="timeline-item">
-                                    <div class="timeline-date-section">
-                                        <div class="timeline-date">
-                                            {formatDate(
-                                                post.data.pubDate,
-                                                lang,
-                                            )}
+            <!-- 移动端简洁布局 -->
+            <div class="block lg:hidden">
+                <div class="space-y-4">
+                    {
+                        posts.map((post) => (
+                            <BlogCard post={post} lang={lang} />
+                        ))
+                    }
+                </div>
+            </div>
+            
+            <!-- 桌面端原有布局 -->
+            <div class="hidden lg:block">
+                <div class="grid lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+                    <!-- 左侧主要内容 - 时间轴 -->
+                    <section class="lg:col-span-3 order-2 lg:order-1">
+                        <div class="timeline-container">
+                            {
+                                posts.map((post, index) => (
+                                    <article class="timeline-item">
+                                        <div class="timeline-date-section">
+                                            <div class="timeline-date">
+                                                {formatDate(
+                                                    post.data.pubDate,
+                                                    lang,
+                                                )}
+                                            </div>
+                                            <div class="timeline-marker">
+                                                <div class="timeline-dot" />
+                                                {index < posts.length - 1 && (
+                                                    <div class="timeline-line" />
+                                                )}
+                                            </div>
                                         </div>
-                                        <div class="timeline-marker">
-                                            <div class="timeline-dot" />
-                                            {index < posts.length - 1 && (
-                                                <div class="timeline-line" />
-                                            )}
+                                        <div class="timeline-content">
+                                            <BlogCard post={post} lang={lang} />
                                         </div>
-                                    </div>
-                                    <div class="timeline-content">
-                                        <BlogCard post={post} lang={lang} />
-                                    </div>
-                                </article>
-                            ))
-                        }
-                    </div>
-                </section>
+                                    </article>
+                                ))
+                            }
+                        </div>
+                    </section>
 
-                <!-- 右侧侧边栏 -->
-                <aside class="lg:col-span-1">
-                    <AuthorSidebar
-                        lang={lang}
-                        totalPosts={posts.length}
-                        popularTags={popularTags}
-                    />
-                </aside>
+                    <!-- 右侧侧边栏 -->
+                    <aside class="lg:col-span-1 order-1 lg:order-2">
+                        <AuthorSidebar
+                            lang={lang}
+                            totalPosts={posts.length}
+                            popularTags={popularTags}
+                        />
+                    </aside>
+                </div>
             </div>
         </main>
         <Footer />
@@ -158,23 +171,66 @@ const popularTags = Array.from(tagCounts.entries())
 
             /* 响应式设计 */
             @media (max-width: 768px) {
+                .container {
+                    padding-left: 1rem;
+                    padding-right: 1rem;
+                }
+                
                 .timeline-date-section {
-                    width: 1.5rem;
+                    width: 4rem;
                 }
 
                 .timeline-date {
                     font-size: 0.625rem;
                     padding: 0.125rem 0.25rem;
-                    min-width: 4rem;
+                    min-width: 3rem;
+                    line-height: 1.3;
+                    white-space: break-spaces;
                 }
 
                 .timeline-dot {
                     width: 0.75rem;
                     height: 0.75rem;
+                    border-width: 2px;
+                }
+
+                .timeline-line {
+                    width: 1px;
+                    min-height: 6rem;
+                }
+
+                .timeline-content {
+                    margin-left: 0.75rem;
+                }
+
+                .timeline-item {
+                    margin-bottom: 1.5rem;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .timeline-date-section {
+                    width: 3rem;
+                }
+
+                .timeline-date {
+                    font-size: 0.5rem;
+                    min-width: 2.5rem;
+                    padding: 0.125rem 0.125rem;
+                }
+
+                .timeline-dot {
+                    width: 0.5rem;
+                    height: 0.5rem;
+                    border-width: 1px;
                 }
 
                 .timeline-content {
                     margin-left: 0.5rem;
+                }
+
+                .timeline-line {
+                    min-height: 4rem;
                 }
             }
         </style>

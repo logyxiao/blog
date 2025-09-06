@@ -73,7 +73,7 @@ const formatDate = (date: Date) => {
 <div
     class="paper-card overflow-hidden group hover:shadow-lg transition-all duration-300"
 >
-    <div class="flex gap-4 p-4">
+    <div class="flex gap-3 sm:gap-4 p-3 sm:p-4">
         <!-- 左侧海报 -->
         <div class="flex-shrink-0">
             {
@@ -81,14 +81,14 @@ const formatDate = (date: Date) => {
                     <Image
                         src={movie.data.poster}
                         alt={`${movie.data.title} poster`}
-                        class="w-32 object-cover rounded-lg border border-border"
+                        class="w-20 sm:w-32 h-28 sm:h-auto object-cover rounded-lg border border-border"
                         loading="lazy"
                     />
                 ) : (
                     <img
                         src={movie.data.poster}
                         alt={`${movie.data.title} poster`}
-                        class="w-32 object-cover rounded-lg border border-border"
+                        class="w-20 sm:w-32 h-28 sm:h-auto object-cover rounded-lg border border-border"
                         loading="lazy"
                     />
                 )
@@ -96,30 +96,34 @@ const formatDate = (date: Date) => {
         </div>
 
         <!-- 右侧信息 -->
-        <div class="flex-1 min-w-0 space-y-2">
+        <div class="flex-1 min-w-0 space-y-1.5 sm:space-y-2">
             <!-- 标题和年份 -->
             <div class="flex items-start justify-between gap-2">
                 <h3
-                    class="text-lg font-bold text-foreground line-clamp-2 group-hover:text-primary transition-colors"
+                    class="text-base sm:text-lg font-bold text-foreground line-clamp-2 group-hover:text-primary transition-colors leading-tight"
                 >
                     {movie.data.title}
                 </h3>
-                <span class="text-sm text-muted-foreground flex-shrink-0">
+                <span class="text-xs sm:text-sm text-muted-foreground flex-shrink-0 mt-0.5">
                     {movie.data.year}
                 </span>
             </div>
 
             <!-- 类别和时长 -->
-            <div class="flex items-center gap-2 text-sm text-muted-foreground">
-                <span
-                    class="px-3 py-1 bg-surface rounded text-xs border border-border"
-                >
-                    {categoryMap[movie.data.category]}
-                </span>
-                <span>•</span>
-                <span>{movie.data.duration}</span>
-                <span>•</span> 
-                <span>{movie.data.director}</span>
+            <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs sm:text-sm text-muted-foreground">
+                <div class="flex items-center gap-2">
+                    <span
+                        class="px-2 py-0.5 sm:px-3 sm:py-1 bg-surface rounded text-xs border border-border"
+                    >
+                        {categoryMap[movie.data.category]}
+                    </span>
+                    <span class="hidden sm:inline">•</span>
+                    <span class="text-xs">{movie.data.duration}</span>
+                </div>
+                <div class="flex items-center gap-1 sm:gap-2">
+                    <span class="hidden sm:inline">•</span> 
+                    <span class="text-xs truncate">{movie.data.director}</span>
+                </div>
             </div>
 
  
@@ -145,20 +149,16 @@ const formatDate = (date: Date) => {
             </div>
 
                 <!-- 评分区域 -->
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div class="flex items-center gap-2 sm:gap-3 text-xs">
                     <!-- 我的评分 -->
                     <div class="flex items-center gap-1">
-                        <span class="text-xs text-muted-foreground"
-                            >{
-                                lang === "zh-cn" ? "我的评分" : "My Rating"
-                            }:</span
-                        >
+                        <span class="text-xs text-muted-foreground">{lang === "zh-cn" ? "我的" : "My"}:</span>
                         <div class="flex items-center">
                             {
                                 stars.full.map(() => (
                                     <svg
-                                        class="w-3 h-3 text-yellow-500"
+                                        class="w-2.5 h-2.5 sm:w-3 sm:h-3 text-yellow-500"
                                         fill="currentColor"
                                         viewBox="0 0 20 20"
                                     >
@@ -169,7 +169,7 @@ const formatDate = (date: Date) => {
                             {
                                 stars.half.map(() => (
                                     <svg
-                                        class="w-3 h-3 text-yellow-500"
+                                        class="w-2.5 h-2.5 sm:w-3 sm:h-3 text-yellow-500"
                                         fill="currentColor"
                                         viewBox="0 0 20 20"
                                     >
@@ -195,7 +195,7 @@ const formatDate = (date: Date) => {
                             {
                                 stars.empty.map(() => (
                                     <svg
-                                        class="w-3 h-3 text-gray-300"
+                                        class="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gray-300"
                                         fill="currentColor"
                                         viewBox="0 0 20 20"
                                     >
@@ -204,7 +204,7 @@ const formatDate = (date: Date) => {
                                 ))
                             }
                         </div>
-                        <span class="text-sm font-medium text-foreground"
+                        <span class="text-xs sm:text-sm font-medium text-foreground"
                             >{movie.data.myRating.toFixed(1)}</span
                         >
                     </div>
@@ -214,14 +214,14 @@ const formatDate = (date: Date) => {
                         <span class="text-xs text-muted-foreground"
                             >{lang === "zh-cn" ? "豆瓣" : "Douban"}:</span
                         >
-                        <span class="text-sm font-medium text-yellow-600"
+                        <span class="text-xs sm:text-sm font-medium text-yellow-600"
                             >{movie.data.doubanRating.toFixed(1)}</span
                         >
                     </div>
                 </div>
 
                 <!-- 观看日期 -->
-                <span class="text-xs text-muted-foreground">
+                <span class="text-xs text-muted-foreground self-start sm:self-auto">
                     {formatDate(movie.data.watchedDate)}
                 </span>
             </div>
